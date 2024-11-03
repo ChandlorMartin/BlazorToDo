@@ -1,0 +1,55 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+
+<h3>Todo (@toDos.Count(toDo => !toDo.IsDone))</h3>
+
+<ul>
+    @foreach (var toDo in toDos)
+    {
+        <li>
+            <input type="checkbox" @bind="toDo.IsDone" />
+            <input @bind="toDo.Title" />
+        </li>
+    }
+</ul>
+
+<!-- For adding items to the toDo list-->
+<input @bind="newToDo" />
+<button @onclick="AddToDo">Add ToDo</button>
+
+<!-- For removing items from the toDo list-->
+<button @onclick="RemoveToDo">Remove ToDo</button>
+
+@code {
+    private List<ToDoItem> toDos = new();
+    string newToDo = "";
+
+    //Adds ToDoItems to toDos which updates the ui
+    void AddToDo()
+    {
+        if (!string.IsNullOrWhiteSpace(newToDo))
+        {
+            toDos.Add(new ToDoItem { Title = newToDo });
+            newToDo = string.Empty;
+        }
+    }
+
+
+    //Creates a list of completed toDoItems and then uses that to edit toDos
+    void RemoveToDo()
+    {
+        List<ToDoItem> itemsToRemove = new();
+        foreach(ToDoItem item in toDos)
+        {
+            if(item.IsDone)
+            {
+                itemsToRemove.Add(item);
+            }
+        }
+
+        foreach (ToDoItem item in itemsToRemove)
+        {
+            toDos.Remove(item);
+        }
+    }
+}
